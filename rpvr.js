@@ -35,26 +35,26 @@ if (Meteor.isServer) {
   });
 
   // Make a process call into Axel
-  // Todo: Detach head?
-  function callAxel(cb) {
+  // Todo: Detach
+  function axel(address, options, cb) {
 
     // Example axel command
     // axel -avn 10 -o "Top.Gear.S21E06.PROPER.HDTV.x264-RiVER.[VTV].mp4" https://ianoshorty:d4yl1ght0169@put.io/download/279908961
     // Example axel command - Mac
     // /usr/local/bin/axel -avn 10 -o "~/Top.Gear.S21E06.PROPER.HDTV.x264-RiVER.[VTV].mp4" https://ianoshorty:d4yl1ght0169@put.io/download/279908961 
 
-    var command = spawn('/usr/local/bin/axel', ['-avn 10', '-o "~/Downloads/Top.Gear.S21E06.PROPER.HDTV.x264-RiVER.[VTV].mp4"' , 'https://ianoshorty:d4yl1ght0169@put.io/download/279908961']);
+    var command = spawn('/usr/local/bin/axel', ['-avn 10', '-o ' + options.file, address], {'cwd':options.cwd, 'env':process.env});
 
     command.stdout.on('data',  function (data) {
-      cb(1, 'stdout: ' + data);
+      cb(1, ''+data);
     });
 
     command.stderr.on('data', function (data) {
-      cb(2, 'stderr: ' + data);
+      cb(2, ''+data);
     });
 
     command.on('exit', function (code) {
-      cb(3, 'child process exited with code ' + code);
+      cb(3, ''+code);
     });
     
   }
@@ -62,10 +62,43 @@ if (Meteor.isServer) {
   Meteor.methods({
     addAxelJob: function() {
 
-      callAxel(function(status, response){
-        console.log(response);
-      });
+      var job = {
+        'percentage'  : null,
+        'speed'       : null,
+        'remaining'   : null
+      };
 
+      /*setInterval(function() {
+        console.log(job);
+      }, 1000);*/
+ 
+      axel('https://ianoshorty:d4yl1ght0169@put.io/download/279905001', {
+          'file':'1.mp4',
+          'cwd':'/Users/ianoshorty/Downloads'
+        }, 
+        function(status, response){
+
+          if (status === 1) {
+
+            // /\[\s*([0-9]{1,3})%\].*\[\s*([0-9]+\.[0-9]+[A-Z][a-zA-Z]\/s)\]\s*\[([0-9]+:[0-9]+)\]/i
+
+            var re = /\[\s*([0-9]{1,3})%\].*\[\s*([0-9]+\.[0-9]+[A-Z][a-zA-Z]\/s)\]\s*\[([0-9]+:[0-9]+)\]/i; 
+            var str = response;
+            var m;
+            
+            while ((m = re.exec(str)) != null) {
+                if (m.index === re.lastIndex) {
+                    re.lastIndex++;
+                }
+
+                job.percentage   = m[1];
+                job.speed        = m[2];
+                job.remaining    = m[3];
+            }          
+          }    
+
+          console.log(job);      
+      });
     }
   });  
 }
