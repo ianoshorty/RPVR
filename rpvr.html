@@ -1,14 +1,34 @@
 <head>
-  <title>rpvr</title>
+  <title>RPVR - Put.io PVR</title>
 </head>
 
 <body>
-  <h1>Welcome to Meteor!</h1>
+  <h1>Welcome to RPVR!</h1>
 
-  {{> hello}}
+  {{> axel}}
+
 </body>
 
-<template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
+<template name="axel">
+
+  <form method="post">
+	<label for="url">Download url</label>
+  	<input type="text" name="url" id="url" placeholder="http://www.example.com/test.doc" />
+  </form>
+
+  <table>
+  <thead>
+  	<tr>
+  		<td>Filename</td>
+  		<td>Percentage complete</td>
+  	</tr>
+  </thead>
+  <tbody>
+  	<tr>
+  		<td>test.doc</td>
+  		<td>87%</td>
+  	</tr>
+  </tbody>
+  </table>
+
 </template>
