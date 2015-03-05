@@ -1,4 +1,4 @@
-# RPVR
+# RPVR - Axel Download Manager With Put.io Integration
 
 RPVR is a tool written in [Meteor] to manage the download and cleanup of files from [Put IO].
 Inspired by [Put IO Manager], the tool is intended to be run on a Raspberry PI download box (but will work on any Linux Meteor setup). It will:

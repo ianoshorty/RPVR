@@ -26,12 +26,14 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
 
   // Get a handler to the spawn library
-  var spawn;
+  var child_process;
+  var readline;
 
   Meteor.startup(function () {
     // code to run on server at startup
 
-    spawn = Npm.require('child_process').spawn;
+    child_process = Npm.require('child_process');
+    readline = Npm.require('readline');
   });
 
   // Make a process call into Axel
@@ -43,8 +45,9 @@ if (Meteor.isServer) {
     // Example axel command - Mac
     // /usr/local/bin/axel -avn 10 -o "~/Top.Gear.S21E06.PROPER.HDTV.x264-RiVER.[VTV].mp4" https://ianoshorty:d4yl1ght0169@put.io/download/279908961 
 
-    var command = spawn('/usr/local/bin/axel', ['-avn 10', '-o ' + options.file, address], {'cwd':options.cwd, 'env':process.env});
+    var command = child_process.spawn('/usr/local/bin/axel', ['-avn 10', '-o ' + options.file, address], {'cwd':options.cwd, 'env':process.env});
 
+    /*
     command.stdout.on('data',  function (data) {
       cb(1, ''+data);
     });
@@ -52,11 +55,26 @@ if (Meteor.isServer) {
     command.stderr.on('data', function (data) {
       cb(2, ''+data);
     });
+    */
+
+    readline.createInterface({
+      input     : command.stdout,
+      terminal  : false
+    }).on('line', function(line) {
+      cb(1, line);
+    });
+
+    readline.createInterface({
+      input     : command.stderr,
+      terminal  : false
+    }).on('line', function(line) {
+      cb(2, line);
+    });
 
     command.on('exit', function (code) {
       cb(3, ''+code);
     });
-    
+      
   }
 
   Meteor.methods({
@@ -85,19 +103,20 @@ if (Meteor.isServer) {
             var re = /\[\s*([0-9]{1,3})%\].*\[\s*([0-9]+\.[0-9]+[A-Z][a-zA-Z]\/s)\]\s*\[([0-9]+:[0-9]+)\]/i; 
             var str = response;
             var m;
+            //var i = 0;
             
             while ((m = re.exec(str)) != null) {
                 if (m.index === re.lastIndex) {
                     re.lastIndex++;
                 }
-
-                job.percentage   = m[1];
-                job.speed        = m[2];
-                job.remaining    = m[3];
-            }          
+                
+                console.log('percentage:' + m[1]);
+                console.log('speed:' + m[2]);
+                console.log('ttl:' + m[3]);
+            }        
           }    
 
-          console.log(job);      
+          //console.log(job);      
       });
     }
   });  
