@@ -1,4 +1,13 @@
 Template.axel.helpers({
+  
+  downloads: function() {
+    return Downloads.find({});
+  },
+
+  downloadIsPaused: function() {
+    return (this.status == 'paused')? true: false;
+  }
+
 });
 
 Template.axel.events({
@@ -12,10 +21,16 @@ Template.axel.events({
     }
   },
 
-  // Stop all downloads
-  'click #cancel': function(event){
+  // Stop a downloads
+  'click #pause': function(event){
 
-    Meteor.call('pauseAllDownloads');
+    Meteor.call('pauseDownload', this.downloadId);
+  },
+
+  // Resume a downloads
+  'click #resume': function(event){
+
+    Meteor.call('resumeDownload', this.downloadId);
   },
 
   // Ignore form submit

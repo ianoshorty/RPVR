@@ -16,20 +16,30 @@
     <input type="text" name="url" id="url" placeholder="http://www.example.com/test.doc">
   </form>
 
-  <button id="cancel">Cancel Downloads</button>
-
   <table>
   <thead>
   	<tr>
   		<td>Filename</td>
   		<td>Percentage complete</td>
+      <td>Speed</td>
+      <td>TTL</td>
+      <td>Pause Download</td>
+      <td>Cancel Download</td>
   	</tr>
   </thead>
   <tbody>
-  	<tr>
-  		<td>test.doc</td>
-  		<td>87%</td>
-  	</tr>
+    
+    {{#each downloads}}
+    <tr>
+      <td>{{fileName}}</td>
+      <td>{{percentage}}%</td>
+      <td>{{speed}}</td>
+      <td>{{ttl}}</td>
+      <td>{{#if downloadIsPaused}}<button id="resume">Resume</button>{{else}}<button id="pause">Pause</button>{{/if}}</td>
+      <td><button id="cancel">Cancel</button></td>
+    </tr>
+    {{/each}}
+
   </tbody>
   </table>
 
