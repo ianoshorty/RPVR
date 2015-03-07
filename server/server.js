@@ -11,9 +11,6 @@
       // Todo: make reactive so that not always updating the database
 
       Downloads.update(download._id, {$set: status})
-
-      //console.log(status);
-      //console.log(download);
     });
 
   }, 2000);
@@ -63,6 +60,8 @@
     },
 
     cancelDownload: function(downloadId) {
+
+      var download = Downloads.findOne({'downloadId': downloadId});
 
     }
 
