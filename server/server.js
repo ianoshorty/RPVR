@@ -1,7 +1,7 @@
   var axel = new AxelDownloader('ian');
 
   // Every two seconds, poll and update the list of downloads
-  // Todo: Improve this.
+  // Todo: Improve this. Clear out downloads on 100% dont bother polling paused downloads
   Meteor.setInterval(function() {
 
     _.each(Downloads.find({}).fetch(), function(download) {
@@ -16,17 +16,11 @@
   }, 2000);
 
   Meteor.methods({
-    addAxelJob: function() {
+    addAxelJob: function(params) {
 
-      var job = {
-        'percentage'  : null,
-        'speed'       : null,
-        'remaining'   : null
-      };
-
-      var download = axel.download('https://ianoshorty:d4yl1ght0169@put.io/download/279905001', {
-        'file':'1.mp4',
-        'cwd':'/Users/ianoshorty/Downloads'
+      var download = axel.download(params.url, {
+        'file'  : params.fileName,
+        'cwd'   : '/Users/ianoshorty/Downloads'
       });
 
       Downloads.insert(download);
@@ -44,7 +38,10 @@
 
       axel.pause(download.pid);
 
-      Downloads.update(download._id, {$set: {'status':'paused'}});
+      Downloads.update(download._id, {$set: {
+        'status':'paused',
+        'speed' :'0KB/s'
+      }});
     },
 
     resumeDownload: function(downloadId) {
@@ -62,6 +59,21 @@
     cancelDownload: function(downloadId) {
 
       var download = Downloads.findOne({'downloadId': downloadId});
+
+      function cancelTheDownload(download) {
+        axel.cancel(download);
+
+        Downloads.remove(download._id);
+      }
+
+      if (download.status == 'downloading') {
+        Meteor.call('pauseDownload', downloadId, function(){
+          cancelTheDownload(download);
+        });
+      }
+      else {
+        cancelTheDownload(download);
+      }
 
     }
 

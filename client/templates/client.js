@@ -1,3 +1,10 @@
+function basename(str) {
+   var base = new String(str).substring(str.lastIndexOf('/') + 1); 
+    if(base.lastIndexOf(".") != -1)       
+        base = base.substring(0, base.lastIndexOf("."));
+   return base;
+}
+
 Template.axel.helpers({
   
   downloads: function() {
@@ -12,15 +19,6 @@ Template.axel.helpers({
 
 Template.axel.events({
 
-  // Call the server, pass in the required url for Axel
-  'keyup #url': function (event) {
-    event.preventDefault();
-
-    if (event.keyCode == 13) {    
-      Meteor.call('addAxelJob', function(err, command) {});
-    }
-  },
-
   // Stop a downloads
   'click #pause': function(event){
 
@@ -33,8 +31,31 @@ Template.axel.events({
     Meteor.call('resumeDownload', this.downloadId);
   },
 
-  // Ignore form submit
+  // Cancel a download
+  'click #cancel': function(event){
+
+    Meteor.call('cancelDownload', this.downloadId);
+  },
+
+  // Call the server, pass in the required url for Axel
   'submit form': function(event) {
     event.preventDefault();
+
+    var url = _.trim(event.target.url.value);
+
+    if (_.isEmpty(url)) {
+
+      alert('Nope.');
+
+      return;
+    }
+
+    var fileName = _.trim(event.target.filename.value);
+
+    if (_.isEmpty(fileName)) {
+      fileName = basename(url);
+    }
+
+    Meteor.call('addAxelJob', {'fileName':fileName, 'url':url},function(err, command) {});
   }
 });
