@@ -92,7 +92,7 @@ Template.putio.helpers({
   },
 
   downloads: function() {
-
+    /*
     if (_.isEmpty(Session.get('putio-transfers'))) {
 
       Meteor.call('getPutIOTransfers', function(error, data) {
@@ -100,7 +100,7 @@ Template.putio.helpers({
           Session.set('putio-transfers', data.result.transfers);
         }
       });
-    }
+    }*/
 
     return Session.get('putio-transfers');
   }
