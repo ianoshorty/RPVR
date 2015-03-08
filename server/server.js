@@ -94,7 +94,5 @@
       else {
         cancelTheDownload(download);
       }
-
     }
-
   });  

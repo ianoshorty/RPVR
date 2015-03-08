@@ -8,3 +8,7 @@ meteor-platform
 autopublish
 insecure
 wizonesolutions:underscore-string
+meteorhacks:npm
+
+
+npm-container
