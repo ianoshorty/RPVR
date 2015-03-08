@@ -15,7 +15,7 @@ Inspired by [Put IO Manager], the tool is intended to be run on a Linux download
   - When the download completes, remove the file from the put.io storage 
 
 ### Version
-0.1.0
+0.1.3
 
 ---
 ### Prerequesites
@@ -44,7 +44,7 @@ Want to contribute? Great! Feel free to get in touch with me and we can collabor
 // Add TODOs
 
   - Method to add completeion scripts
-  - Put.IO integration
+  - Put.IO watch integration
   - Refactor AxelDownloader as a standalone node package (remove underscore / meteor dependancy)
   - Improve AxelDownloader methods to use a single interface (the download object)
   - Handle items better to instill reactivity
