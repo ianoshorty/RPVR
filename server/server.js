@@ -29,11 +29,22 @@
           // If completed - remove
           axel.clearCompleted(download);
           Downloads.remove(download._id);
+
+          // Todo: add to downloaded list
+          // Todo: run post download scripts
         }
       }
     });
 
   }, 10000);
+
+
+  // Debug server methods
+  /*Meteor.setTimeout(function() {
+
+    Meteor.call('getPutIOTransfers');
+
+  }, 2000);*/
 
   Meteor.methods({
     addAxelJob: function(params) {
@@ -147,6 +158,52 @@
       }
 
       return data;
+    },
+
+    deletePutIOFile: function(object) {
+
+      var PutIO = Meteor.npmRequire('put.io-v2');
+
+      var oauth_token = 'FZB5EO3R';
+
+      var api = new PutIO(oauth_token);
+
+      var deleteId = null;
+
+      if (typeof object != 'undefined') {
+        deleteID = object.id;
+      }
+
+      if (typeof deleteID != 'null')  {
+
+        var deleted = Async.runSync(function(done) {
+          api.files.delete(deleteID, function() {
+            done(null, deleteID);
+          });
+        });
+
+        return deleted;
+      }
+      else {
+        return false;
+      }
+    },
+
+    getPutIOTransfers: function() {
+
+      var PutIO = Meteor.npmRequire('put.io-v2');
+
+      var oauth_token = 'FZB5EO3R';
+
+      var api = new PutIO(oauth_token);
+
+      var transfers = Async.runSync(function(done) {
+        api.transfers.list(function(transfers){
+          done(null, transfers);
+        });
+      });
+
+      return transfers;
     },
 
     config: function() {

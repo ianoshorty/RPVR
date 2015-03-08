@@ -24,6 +24,8 @@
 
   <hr>
 
+  <h2>Downloads</h2>
+
   <table>
   <thead>
   	<tr>
@@ -55,6 +57,8 @@
 
 <template name="putio">
 
+  <h2>Put IO Files</h2>
+
   <table>
   <thead>
     <tr>
@@ -63,6 +67,7 @@
       <td>Type</td>
       <td>Size</td>
       <td>Download</td>
+      <td>Delete</td>
     </tr>
   </thead>
   <tbody>
@@ -74,6 +79,38 @@
       <td>{{content_type}}</td>
       <td>{{size}}</td>
       <td><button id="download">Download</button></td>
+      <td><button id="delete">Delete</button></td>
+    </tr>
+    {{/each}}
+
+  </tbody>
+  </table>
+
+  <hr>
+
+  <h2>PutIO Server Transfers</h2>
+
+  <table>
+  <thead>
+    <tr>
+      <td>Filename</td>
+      <td>Status</td>
+      <td>Percentage complete</td>
+      <td>Speed</td>
+      <td>TTL</td>
+      <!-- <td>Cancel Download</td> -->
+    </tr>
+  </thead>
+  <tbody>
+    
+    {{#each downloads}}
+    <tr>
+      <td>{{name}}</td>
+      <td>{{status}}</td>
+      <td>{{percent_done}}%</td>
+      <td>{{down_speed}}</td>
+      <td>{{estimated_time}}</td>
+      <!-- <td><button id="cancel">Cancel</button></td> -->
     </tr>
     {{/each}}
 

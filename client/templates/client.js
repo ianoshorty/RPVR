@@ -79,17 +79,32 @@ Template.putio.helpers({
 
   items: function() {
 
-    if (_.isEmpty(Session.get('files'))) {
+    if (_.isEmpty(Session.get('putio-files'))) {
 
       Meteor.call('listPutIOFiles', function(error, data) {
         if (typeof data != 'undefined' && typeof data.result.files != 'undefined') {
-          Session.set('files', data.result.files);
+          Session.set('putio-files', data.result.files);
         }
       });
     }
 
-    return Session.get('files');
+    return Session.get('putio-files');
+  },
+
+  downloads: function() {
+
+    if (_.isEmpty(Session.get('putio-transfers'))) {
+
+      Meteor.call('getPutIOTransfers', function(error, data) {
+        if (typeof data != 'undefined' && typeof data.result.transfers != 'undefined') {
+          Session.set('putio-transfers', data.result.transfers);
+        }
+      });
+    }
+
+    return Session.get('putio-transfers');
   }
+
 });
 
 Template.putio.events({
@@ -99,18 +114,36 @@ Template.putio.events({
 
       Meteor.call('listPutIOFiles', {'parentId':this.id}, function(err, data){
         if (typeof data.result.files != 'undefined') {
-          Session.set('files', data.result.files);
+          Session.set('putio-files', data.result.files);
         }
       });
   },
 
-  'click button': function(event) {
+  'click #download': function(event) {
       event.preventDefault();
 
       var fileName = this.name;
       var url = buildPutIODownloadString(this.id);
 
       Meteor.call('addAxelJob', {'fileName':fileName, 'url':url});
+  },
+
+  'click #delete': function(event) {
+      event.preventDefault();
+
+      if (confirm('Are you sure you want to delete ' + this.name)) {
+
+        Meteor.call('deletePutIOFile', this, function(error, success) {
+
+        var files = Session.get('putio-files');
+
+        files = _.filter(files, function(file) { 
+          return file.id != success.result;
+        });
+
+        Session.set('putio-files', files);
+      });
+      }
   }
 
 });
