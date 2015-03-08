@@ -35,13 +35,6 @@
 
   }, 10000);
 
-  /*
-  Meteor.setTimeout(function() {
-
-    Meteor.call('listPutIOFiles');
-
-  }, 1000);*/
-
   Meteor.methods({
     addAxelJob: function(params) {
 
@@ -103,7 +96,7 @@
       }
     },
 
-    listPutIOFiles: function() {
+    listPutIOFiles: function(object) {
 
       var PutIO = Meteor.npmRequire('put.io-v2');
 
@@ -111,17 +104,52 @@
 
       var api = new PutIO(oauth_token);
 
+      var parentId = null;
+
+      if (typeof object != 'undefined') {
+        parentId = object.parentId;
+      }
+       
       var data = Async.runSync(function(done) {
-        api.files.list(0, function(data){
+
+        if(typeof parentId == null) {
+           parentId = 0;
+        }
+        
+        api.files.list(parentId, function(data){
           done(null, data);
-        }); 
+        });
+
       });
 
-      //console.log(data.result);
+      if (typeof data != 'undefined') {
+        var parent = Async.runSync(function(complete) {
+          api.files.get(data.result.files[0].parent_id, function (data){
+            complete(null, data);
+          })
+        });
 
-      _.each(data.result.files, function(file) {
-        PutIOFiles.insert(file);
-      });
+        data.result.files.unshift({
+          'content_type': "application/x-directory",
+          'crc32': null,
+          'created_at': "2015-03-08T01:43:16",
+          'first_accessed_at': null,
+          'icon': "https://put.io/images/file_types/folder.png",
+          'id': parent.result.file.parent_id,
+          'is_mp4_available': false,
+          'is_shared': false,
+          'name': "..",
+          'opensubtitles_hash': null,
+          'parent_id': 279903167,
+          'screenshot': null,
+          'size': 0
+        });
+      }
 
+      return data;
+    },
+
+    config: function() {
+      return publicConfig;
     }
   });  
