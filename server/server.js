@@ -2,18 +2,38 @@
 
   // Every two seconds, poll and update the list of downloads
   // Todo: Improve this. Clear out downloads on 100% dont bother polling paused downloads
+  // Todo: make reactive so that not always updating the database
   Meteor.setInterval(function() {
 
     _.each(Downloads.find({}).fetch(), function(download) {
       
       var status = axel.downloadStatus(download.logPath + download.logName + '.log');
 
-      // Todo: make reactive so that not always updating the database
-
       Downloads.update(download._id, {$set: status})
     });
 
   }, 2000);
+
+  // Use this as a cleanup function, much larger interval (10 secs)
+  // Todo: handle this better
+  Meteor.setInterval(function() {
+
+    _.each(Downloads.find({}).fetch(), function(download) {
+
+      // if its nearly complete (remember this is timing)
+      if (download.percentage >= 95) {
+
+        // Check if axels download tracker is gone.
+        if (axel.checkCompleted(download)) {
+
+          // If completed - remove
+          axel.clearCompleted(download);
+          Downloads.remove(download._id);
+        }
+      }
+    });
+
+  }, 10000);
 
   Meteor.methods({
     addAxelJob: function(params) {
