@@ -1,50 +1,5 @@
   var axel = new AxelDownloader('ian');
-
-  // Every two seconds, poll and update the list of downloads
-  // Todo: Improve this. Clear out downloads on 100% dont bother polling paused downloads
-  // Todo: make reactive so that not always updating the database
-  Meteor.setInterval(function() {
-
-    _.each(Downloads.find({}).fetch(), function(download) {
-      
-      var status = axel.downloadStatus(download.logPath + download.logName + '.log');
-
-      Downloads.update(download._id, {$set: status})
-    });
-
-  }, 2000);
-
-  // Use this as a cleanup function, much larger interval (10 secs)
-  // Todo: handle this better
-  Meteor.setInterval(function() {
-
-    _.each(Downloads.find({}).fetch(), function(download) {
-
-      // if its nearly complete (remember this is timing)
-      if (download.percentage >= 95) {
-
-        // Check if axels download tracker is gone.
-        if (axel.checkCompleted(download)) {
-
-          // If completed - remove
-          axel.clearCompleted(download);
-          Downloads.remove(download._id);
-
-          // Todo: add to downloaded list
-          // Todo: run post download scripts
-        }
-      }
-    });
-
-  }, 10000);
-
-
-  // Debug server methods
-  /*Meteor.setTimeout(function() {
-
-    Meteor.call('getPutIOTransfers');
-
-  }, 2000);*/
+  var watcher = new PutIOWatcher();
 
   Meteor.methods({
     addAxelJob: function(params) {
@@ -210,3 +165,51 @@
       return publicConfig;
     }
   });  
+
+  // Every two seconds, poll and update the list of downloads
+  // Todo: Improve this. Clear out downloads on 100% dont bother polling paused downloads
+  // Todo: make reactive so that not always updating the database
+  Meteor.setInterval(function() {
+
+    _.each(Downloads.find({}).fetch(), function(download) {
+      
+      var status = axel.downloadStatus(download.logPath + download.logName + '.log');
+
+      Downloads.update(download._id, {$set: status})
+    });
+
+  }, 2000);
+
+  // Use this as a cleanup function, much larger interval (10 secs)
+  // Todo: handle this better
+  Meteor.setInterval(function() {
+
+    _.each(Downloads.find({}).fetch(), function(download) {
+
+      // if its nearly complete (remember this is timing)
+      if (download.percentage >= 95) {
+
+        // Check if axels download tracker is gone.
+        if (axel.checkCompleted(download)) {
+
+          // If completed - add to completed list and remove
+          axel.clearCompleted(download);
+          CompletedDownloads.insert(download);
+          Downloads.remove(download._id);
+
+          // Todo: add to downloaded list
+          // Todo: run post download scripts
+        }
+      }
+    });
+
+  }, 10000);
+
+  // Debug server methods
+  /*Meteor.setTimeout(function() {
+
+    watcher.initialise();
+
+  }, 5000);*/
+
+  
