@@ -1,11 +1,18 @@
-# RPVR
+# RPVR - Axel Download Manager With Put.io Integration
 
-RPVR is a tool written in [Meteor] to manage the download and cleanup of files from [Put IO].
-Inspired by [Put IO Manager], the tool is intended to be run on a Raspberry PI download box (but will work on any Linux Meteor setup). It will:
+RPVR is a tool written in [Meteor] to manage the download and cleanup of files using [Axel].
+Inspired by [Put IO Manager], the tool is intended to be run on a Linux download box and offer [Put IO] integration. It will:
+
+##### General  
+
+  - Download, monitor, pause and cancel files using [Axel] - offering a Web GUI.
+  - When the download completes, clean up and run any follow up scripts you like
+
+##### Put IO Integration
+
   - Add files to put.io transfer queue
   - Watch for files that were added to put.io and trigger a download of those files using [Axel]
-  - Monitor the status of the downloads (providing a web gui to Axel) using nohup / screen / similar service
-  - On complete of the download, remove the file from the put.io storage and run some any follow up scripts
+  - When the download completes, remove the file from the put.io storage 
 
 ### Version
 0.1.0
@@ -15,9 +22,9 @@ Inspired by [Put IO Manager], the tool is intended to be run on a Raspberry PI d
 
 In order to install RPVR you will need:
 
- - [Put IO] - A Put.io account and API access
  - [Meteor] - A full stack framework written on top of NodeJS for web applications
- - [Axel] - A linux server with Axel installed
+ - [Axel] 	- A linux server with Axel installed
+ - [Put IO] - A Put.io account and API access for PutIO integration
 
 ### Installation
 
@@ -35,6 +42,13 @@ Want to contribute? Great! Feel free to get in touch with me and we can collabor
 ### Todo's
 
 // Add TODOs
+
+  - Method to add completeion scripts
+  - Put.IO integration
+  - Refactor AxelDownloader as a standalone node package (remove underscore / meteor dependancy)
+  - Improve AxelDownloader methods to use a single interface (the download object)
+  - Handle items better to instill reactivity
+  - Optimise timeouts  
 
 ---
 ### License

@@ -1,0 +1,48 @@
+<head>
+  <title>RPVR - Put.io PVR</title>
+</head>
+
+<body>
+  <h1>Welcome to RPVR!</h1>
+
+  {{> axel}}
+
+</body>
+
+<template name="axel">
+
+  <form method="post">
+    <label for="url">Download url</label>
+    <input type="text" name="url" id="url" placeholder="http://www.example.com/test.doc">
+    <input type="text" name="filename" id="filename" placeholder="test.doc">
+    <input type="submit">
+  </form>
+
+  <table>
+  <thead>
+  	<tr>
+  		<td>Filename</td>
+  		<td>Percentage complete</td>
+      <td>Speed</td>
+      <td>TTL</td>
+      <td>Pause Download</td>
+      <td>Cancel Download</td>
+  	</tr>
+  </thead>
+  <tbody>
+    
+    {{#each downloads}}
+    <tr>
+      <td>{{fileName}}</td>
+      <td>{{percentage}}%</td>
+      <td>{{speed}}</td>
+      <td>{{ttl}}</td>
+      <td>{{#if downloadIsPaused}}<button id="resume">Resume</button>{{else}}<button id="pause">Pause</button>{{/if}}</td>
+      <td><button id="cancel">Cancel</button></td>
+    </tr>
+    {{/each}}
+
+  </tbody>
+  </table>
+
+</template>
