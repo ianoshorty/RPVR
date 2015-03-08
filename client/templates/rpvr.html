@@ -7,6 +7,10 @@
 
   {{> axel}}
 
+  <hr>
+
+  {{> putio}}
+
 </body>
 
 <template name="axel">
@@ -17,6 +21,8 @@
     <input type="text" name="filename" id="filename" placeholder="test.doc">
     <input type="submit">
   </form>
+
+  <hr>
 
   <table>
   <thead>
@@ -39,6 +45,35 @@
       <td>{{ttl}}</td>
       <td>{{#if downloadIsPaused}}<button id="resume">Resume</button>{{else}}<button id="pause">Pause</button>{{/if}}</td>
       <td><button id="cancel">Cancel</button></td>
+    </tr>
+    {{/each}}
+
+  </tbody>
+  </table>
+
+</template>
+
+<template name="putio">
+
+  <table>
+  <thead>
+    <tr>
+      <td>Icon</td>
+      <td>Name</td>
+      <td>Type</td>
+      <td>Size</td>
+      <td>Download</td>
+    </tr>
+  </thead>
+  <tbody>
+    
+    {{#each items}}
+    <tr>
+      <td><img src="{{icon}}"></td>
+      <td><a href="#">{{name}}</a></td>
+      <td>{{content_type}}</td>
+      <td>{{size}}</td>
+      <td><button id="download">Download</button></td>
     </tr>
     {{/each}}
 

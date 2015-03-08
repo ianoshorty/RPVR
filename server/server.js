@@ -35,6 +35,13 @@
 
   }, 10000);
 
+  /*
+  Meteor.setTimeout(function() {
+
+    Meteor.call('listPutIOFiles');
+
+  }, 1000);*/
+
   Meteor.methods({
     addAxelJob: function(params) {
 
@@ -94,5 +101,27 @@
       else {
         cancelTheDownload(download);
       }
+    },
+
+    listPutIOFiles: function() {
+
+      var PutIO = Meteor.npmRequire('put.io-v2');
+
+      var oauth_token = 'FZB5EO3R';
+
+      var api = new PutIO(oauth_token);
+
+      var data = Async.runSync(function(done) {
+        api.files.list(0, function(data){
+          done(null, data);
+        }); 
+      });
+
+      //console.log(data.result);
+
+      _.each(data.result.files, function(file) {
+        PutIOFiles.insert(file);
+      });
+
     }
   });  

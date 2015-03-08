@@ -59,3 +59,10 @@ Template.axel.events({
     Meteor.call('addAxelJob', {'fileName':fileName, 'url':url},function(err, command) {});
   }
 });
+
+Template.putio.helpers({
+
+  items: function() {
+    return PutIOFiles.find({});
+  }
+});
