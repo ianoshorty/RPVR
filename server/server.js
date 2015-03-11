@@ -5,8 +5,10 @@
     addAxelJob: function(params) {
 
       var download = axel.download(params.url, {
-        'file'  : params.fileName,
-        'cwd'   : '/Users/ianoshorty/Downloads'
+        'file'            : params.fileName,
+        'cwd'             : publicConfig.downloadDir, 
+        'axel'            : publicConfig.axel,
+        'axelConnections' : publicConfig.axelConnections
       });
 
       Downloads.insert(download);
@@ -173,7 +175,7 @@
 
     _.each(Downloads.find({}).fetch(), function(download) {
       
-      var status = axel.downloadStatus(download.logPath + download.logName + '.log');
+      var status = axel.downloadStatus(download.logPath + "/" + download.logName + '.log');
 
       Downloads.update(download._id, {$set: status})
     });

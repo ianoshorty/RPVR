@@ -1,4 +1,7 @@
 {
-	"rpvrPutioUsername": "test",
-	"rpvrPutioPpassword": "test123"
+	"rpvrPutioUsername" :	"username",
+	"rpvrPutioPpassword" :	"password",
+	"downloadDir" : 		"~/Downloads",
+	"axel" : 				"/usr/local/bin/axel",
+	"axelConnections" : 	10
 }
